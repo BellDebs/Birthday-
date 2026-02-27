@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drakon Ascension</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:#00ffd5;
+font-family:monospace;
+overflow:hidden;
+text-align:center;
+}
+
+/* MATRIX RAIN */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* CENTER */
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:90%;
+max-width:600px;
+}
+
+.hidden{display:none}
+
+/* CURSOR */
+.cursor{
+display:inline-block;
+width:8px;
+height:18px;
+background:#00ffd5;
+animation:blink 1s infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+/* CARD */
+.card{
+background:rgba(0,0,0,.6);
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 50px #00ffd588;
+animation:rise 1.5s ease;
+}
+
+@keyframes rise{
+from{opacity:0;transform:translateY(40px);}
+}
+
+/* GLITCH */
+.glitch{
+animation:glitch .3s 4;
+}
+@keyframes glitch{
+0%{transform:translate(2px,0)}
+50%{transform:translate(-2px,0)}
+100%{transform:translate(0)}
+}
+
+input{
+padding:12px;
+width:80%;
+border:none;
+border-radius:6px;
+text-align:center;
+}
+
+button{
+padding:12px 22px;
+margin-top:10px;
+background:#00ffd5;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+#perks{
+margin-top:20px;
+opacity:0;
+transform:scale(.7);
+transition:1s;
+color:gold;
+font-weight:bold;
+}
+
+.show{
+opacity:1;
+transform:scale(1);
+}
+
+.dragon{
+font-size:60px;
+opacity:0;
+animation:dragonRise 3s forwards;
+}
+
+@keyframes dragonRise{
+0%{opacity:0;transform:scale(.2)}
+100%{opacity:1;transform:scale(1)}
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<audio id="music" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+
+<div id="boot" class="center">
+<h2 id="bootText"></h2><span class="cursor"></span>
+</div>
+
+<div id="unlock" class="center hidden">
+<h2>SYSTEM AUTHENTICATION</h2>
+<input id="nameInput" placeholder="Enter Codename">
+<br>
+<button onclick="unlock()">Unlock</button>
+<p id="error"></p>
+</div>
+
+<div id="gift" class="center hidden">
+<div class="card">
+<div class="dragon">🐉</div>
+<h1>Welcome, Drakon</h1>
+<p id="message"></p>
+
+<div id="perks">
+⚡ ASCENSION COMPLETE ⚡<br><br>
+Writing Skill +100<br>
+Wealth +100<br>
+Health +100
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* MATRIX RAIN */
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+const letters="01DRKN";
+const fontSize=14;
+const columns=canvas.width/fontSize;
+const drops=[];
+
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ffd5";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+const text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+}
+}
+setInterval(draw,35);
+
+/* BOOT */
+const bootLines=[
+"System Initializing...",
+"Scanning Destiny...",
+"Loading Future Assets...",
+"Binding Identity...",
+"Drakon Protocol Activated..."
+];
+
+let l=0,c=0;
+
+function boot(){
+if(l<bootLines.length){
+bootText.textContent+=bootLines[l].charAt(c);
+c++;
+if(c===bootLines[l].length){
+bootText.textContent+="\n";
+l++;c=0;
+}
+setTimeout(boot,40);
+}else{
+setTimeout(()=>{
+boot.classList.add("hidden");
+unlock.classList.remove("hidden");
+},900);
+}
+}
+boot();
+
+/* UNLOCK */
+function unlock(){
+
+let name=nameInput.value.toLowerCase().trim();
+
+if(name==="drakon"){
+
+document.body.classList.add("glitch");
+
+unlock.classList.add("hidden");
+gift.classList.remove("hidden");
+
+music.play().catch(()=>{});
+
+/* AI Voice */
+let voice=new SpeechSynthesisUtterance("Welcome, Drakon");
+speechSynthesis.speak(voice);
+
+typeMessage();
+
+}else{
+error.textContent="Access Denied";
+}
+}
+
+/* MESSAGE */
+const msg=`Emmanuel • Praise • Sunbola
+
+Your future expands beyond limits.
+Success aligns with your path.
+Inspiration follows your name.
+
+Soon,
+you will live the life you envision.
+
+Rise and conquer, Drakon.`;
+
+let i=0;
+function typeMessage(){
+if(i<msg.length){
+message.textContent+=msg.charAt(i);
+i++;
+setTimeout(typeMessage,28);
+}else{
+setTimeout(()=>{
+perks.classList.add("show");
+},900);
+}
+}
+
+</script>
+
+</body>
+  </html>
