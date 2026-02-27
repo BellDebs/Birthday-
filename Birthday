@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Boot - Drakon</title>
+
+<style>
+body{
+  margin:0;
+  background:#0a0a0a;
+  color:#00ff99;
+  font-family:monospace;
+  overflow:hidden;
+  text-align:center;
+}
+
+/* Stars */
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  animation:twinkle 3s infinite;
+}
+@keyframes twinkle{
+  0%{opacity:0.2;}
+  50%{opacity:1;}
+  100%{opacity:0.2;}
+}
+
+/* Center container */
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  max-width:600px;
+}
+
+.hidden{display:none;}
+
+input{
+  padding:12px;
+  font-size:18px;
+  border:none;
+  border-radius:6px;
+  text-align:center;
+  width:80%;
+}
+
+button{
+  padding:12px 22px;
+  margin-top:12px;
+  background:#00ff99;
+  border:none;
+  cursor:pointer;
+  font-size:16px;
+  border-radius:6px;
+  color:#000;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  padding:30px;
+  border-radius:15px;
+  backdrop-filter:blur(10px);
+  color:white;
+}
+
+#message{
+  white-space:pre-line;
+  font-size:18px;
+  line-height:1.7;
+  color:#00ff99;
+}
+#perks{
+  margin-top:20px;
+  font-size:16px;
+  color:#ffcc00;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background music -->
+<audio id="music" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div id="boot" class="center">
+<h2 id="bootText"></h2>
+</div>
+
+<div id="unlock" class="center hidden">
+<h2>System Authentication Required</h2>
+<p>Enter Codename:</p>
+<input id="nameInput" placeholder="Enter Name">
+<br>
+<button onclick="checkName()">Unlock</button>
+<p id="error"></p>
+</div>
+
+<div id="gift" class="center hidden">
+<div class="card">
+<h1>Welcome, Drakon 🐉</h1>
+<p id="message"></p>
+<div id="perks" class="hidden">
+System Upgrade Unlocked! 🎉  
+Writing Skill +100  
+Wealth +100  
+Health +100
+</div>
+</div>
+</div>
+
+<script>
+
+/* Stars */
+for(let i=0;i<100;i++){
+  let star=document.createElement("div");
+  star.className="star";
+  star.style.top=Math.random()*100+"%";
+  star.style.left=Math.random()*100+"%";
+  document.body.appendChild(star);
+}
+
+/* Boot animation */
+const bootMessage =
+"System Initializing...\n"+
+"Loading Modules...\n"+
+"Verifying User Profile...\n"+
+"Checking Network Status...\n"+
+"Access Granted.\n";
+
+let b=0;
+function boot(){
+  if(b<bootMessage.length){
+    document.getElementById("bootText").innerHTML+=bootMessage.charAt(b);
+    b++;
+    setTimeout(boot,35);
+  }else{
+    setTimeout(()=>{
+      document.getElementById("boot").classList.add("hidden");
+      document.getElementById("unlock").classList.remove("hidden");
+    },1200);
+  }
+}
+boot();
+
+/* Unlock */
+let started=false;
+function checkName(){
+  let name=document.getElementById("nameInput").value.trim().toLowerCase();
+  if(name==="drakon"){
+    document.getElementById("unlock").classList.add("hidden");
+    document.getElementById("gift").classList.remove("hidden");
+    document.getElementById("music").play();
+    if(!started){started=true;typeMessage();}
+  }else{
+    document.getElementById("error").innerText="Identity not recognized ❌";
+  }
+}
+
+/* Typing message */
+const msg=`Today is more than a birthday.
+
+It celebrates vision, growth, and unstoppable ambition.
+
+Emmanuel • Praise • Sunbola
+
+Your career is ascending.
+Inspiration will find you.
+Motivation fuels your every step.
+
+Your dreams will soon become reality.
+
+Keep conquering, Drakon. 🥂✨`;
+
+let i=0;
+function typeMessage(){
+  if(i<msg.length){
+    document.getElementById("message").innerHTML+=msg.charAt(i);
+    i++;
+    setTimeout(typeMessage,30);
+  } else {
+    setTimeout(()=>{
+      document.getElementById("perks").classList.remove("hidden");
+    },500);
+  }
+}
+
+</script>
+</body>
+</html>
